@@ -101,7 +101,7 @@ python-3.11.11
      ```
    - Commande de démarrage :
      ```bash
-     gunicorn app:app --bind 0.0.0.0:$PORT
+     gunicorn app:app --bind 0.0.0.0:$PORT --timeout 120
      ```
 
 ### Étape 5 : Déployer
