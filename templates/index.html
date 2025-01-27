@@ -61,6 +61,12 @@
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
+        #file-message {
+            margin-top: 10px;
+            color: #4CAF50;
+            font-size: 14px;
+            font-weight: bold;
+        }
         button {
             color: white;
             background-color: #4CAF50;
@@ -87,7 +93,6 @@
             display: none;
         }
 
-        /* Styles pour le spinner */
         .spinner {
             display: none;
             position: fixed;
@@ -99,15 +104,29 @@
             z-index: 1000;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
+            text-align: center;
         }
 
-        .spinner div {
+        .spinner div.spinner-circle {
             border: 8px solid #f3f3f3;
             border-top: 8px solid #4CAF50;
             border-radius: 50%;
             width: 60px;
             height: 60px;
             animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .spinner p {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .countdown {
+            font-size: 16px;
+            color: #4CAF50;
         }
 
         @keyframes spin {
@@ -122,7 +141,9 @@
 </head>
 <body>
     <div class="spinner" id="loading-spinner">
-        <div></div>
+        <div class="spinner-circle"></div>
+        <p>Analyse du document en cours...</p>
+        <div class="countdown" id="countdown-timer">Temps restant : 100 secondes</div>
     </div>
     <div class="container">
         <h1>
@@ -132,7 +153,8 @@
             <label for="file" class="custom-file-btn">
                 <img src="../static/PdfDrop.png" alt="Icône PDF">
             </label>
-            <input type="file" name="pdf_file" id="file" accept="application/pdf" required>
+            <input type="file" name="pdf_file" id="file" accept="application/pdf" required onchange="handleFileSelection()">
+            <div id="file-message"></div>
             <div>
                 <button type="submit" id="submit-button">Soumettre</button>
                 <a href="/" class="reset-button">Réinitialiser</a>
@@ -146,8 +168,33 @@
     </div>
 
     <script>
+        function handleFileSelection() {
+            const fileInput = document.getElementById('file');
+            const fileMessage = document.getElementById('file-message');
+            const fileName = fileInput.files[0].name;
+
+            if (fileName) {
+                fileMessage.textContent = `Fichier sélectionné : ${fileName}`;
+            } else {
+                fileMessage.textContent = '';
+            }
+        }
+
         function showLoading() {
-            document.getElementById('loading-spinner').style.display = 'flex';
+            const spinner = document.getElementById('loading-spinner');
+            const countdown = document.getElementById('countdown-timer');
+            let timeLeft = 45;
+
+            spinner.style.display = 'flex';
+
+            const timer = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    countdown.textContent = `Temps restant : ${timeLeft} secondes`;
+                } else {
+                    clearInterval(timer);
+                }
+            }, 1000);
         }
     </script>
 </body>
