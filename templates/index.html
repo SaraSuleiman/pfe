@@ -124,11 +124,6 @@
             margin-bottom: 10px;
         }
 
-        .countdown {
-            font-size: 16px;
-            color: #4CAF50;
-        }
-
         @keyframes spin {
             0% {
                 transform: rotate(0deg);
@@ -142,8 +137,7 @@
 <body>
     <div class="spinner" id="loading-spinner">
         <div class="spinner-circle"></div>
-        <p>Analyse du document en cours...</p>
-        <div class="countdown" id="countdown-timer">Temps restant : 100 secondes</div>
+        <p>Analyse du document en cours...<br>(Cela prend en moyenne 45 secondes, merci de patienter.)</p>
     </div>
     <div class="container">
         <h1>
@@ -182,19 +176,7 @@
 
         function showLoading() {
             const spinner = document.getElementById('loading-spinner');
-            const countdown = document.getElementById('countdown-timer');
-            let timeLeft = 45;
-
             spinner.style.display = 'flex';
-
-            const timer = setInterval(() => {
-                if (timeLeft > 0) {
-                    timeLeft--;
-                    countdown.textContent = `Temps restant : ${timeLeft} secondes`;
-                } else {
-                    clearInterval(timer);
-                }
-            }, 1000);
         }
     </script>
 </body>

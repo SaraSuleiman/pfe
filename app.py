@@ -11,11 +11,35 @@ model = AutoModelForSequenceClassification.from_pretrained(model_path)
 
 # Dictionnaire pour mapper les classes aux messages explicites
 class_mapping = {
-    0: "Le document est une assignation et il y a un vice de procédure.",
-    1: "Le document est une assignation sans vice de procédure.",
-    2: "Le document est une notification et il y a un vice de procédure.",
-    3: "Le document est une notification sans vice de procédure."
+    0: "Assignation : Ce document présente un vice, car le nom du demandeur est absent.",
+    1: "Assignation : Ce document présente un vice, car le nom du tribunal est absent.",
+    2: "Requête : Ce document présente un vice, car le nom de l'opposant est absent.",
+    3: "Requête : Ce document présente un vice, car la date de naissance du demandeur est absente.",
+    4: "Requête : Ce document présente un vice, car le nom du demandeur est absent.",
+    5: "Assignation : Ce document présente un vice, car le lieu de naissance du demandeur est absent.",
+    6: "Requête : Ce document présente un vice, car le lieu de naissance du demandeur est absent.",
+    7: "Assignation : Ce document ne présente aucun vice.",
+    8: "Requête : Ce document présente un vice, car la date de dépôt est absente.",
+    9: "Requête : Ce document présente un vice, car le nom de la chambre est absent.",
+    10: "Assignation : Ce document présente un vice, car le nom de l'huissier est absent.",
+    11: "Assignation : Ce document présente un vice, car le nom de la chambre est absent.",
+    12: "Assignation : Ce document présente un vice, car le nom de l'avocat est absent.",
+    13: "Requête : Ce document présente un vice, car le lieu de résidence du demandeur est absent.",
+    14: "Assignation : Ce document présente un vice, car la date et l’heure de l’audience sont absentes.",
+    15: "Assignation : Ce document présente un vice, car la signature est absente.",
+    16: "Requête : Ce document présente un vice, car la profession du demandeur est absente.",
+    17: "Assignation : Ce document présente un vice, car le nom de l'assigné est absent.",
+    18: "Assignation : Ce document présente un vice, car la date de naissance du demandeur est absente.",
+    19: "Assignation : Ce document présente un vice, car l’année est absente.",
+    20: "Requête : Ce document présente un vice, car le nom du tribunal est absent.",
+    21: "Requête : Ce document présente un vice, car le lieu de résidence de l'opposant est absent.",
+    22: "Assignation : Ce document présente un vice, car la date de l’audience est absente.",
+    23: "Requête : Ce document présente un vice, car la signature est absente.",
+    24: "Assignation : Ce document présente un vice, car l’heure de l’audience est absente.",
+    25: "Requête : Ce document ne présente aucun vice.",
+    26: "Assignation : Ce document présente un vice, car la date de l’audience est absente."
 }
+
 
 # Fonction pour extraire le texte d'un PDF
 def extract_text_from_pdf(file_stream):
