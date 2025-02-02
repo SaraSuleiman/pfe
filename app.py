@@ -6,10 +6,10 @@ import torch
 
 # 🔹 Définition des chemins des modèles
 model_paths = {
-    "notification": "/Users/sara/Desktop/ING5/PFE/Git/Notifications/LesModèles/notificationslegal_bert_model",
-    "assignation": "/Users/sara/Desktop/ING5/PFE/Git/Notifications/LesModèles/assignationlegal_bert_model",
-    "requete": "/Users/sara/Desktop/ING5/PFE/Git/Notifications/LesModèles/Requetelegal_bert_model",
-    "declaration": "/Users/sara/Desktop/ING5/PFE/Git/Notifications/LesModèles/legal_bert_model"
+    "notification": "./notificationslegal_bert_model",
+    "assignation": "./assignationlegal_bert_model",
+    "requete": "./Requetelegal_bert_model",
+    "declaration": "./legal_bert_model"
 }
 
 # 🔹 Chargement des modèles et tokenizers
