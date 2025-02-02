@@ -67,6 +67,13 @@
             font-size: 14px;
             font-weight: bold;
         }
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
         button {
             color: white;
             background-color: #4CAF50;
@@ -75,85 +82,53 @@
             font-size: 14px;
             border-radius: 5px;
             cursor: pointer;
-            margin: 10px 5px;
         }
         button:hover {
             background-color: #45a049;
         }
-        a {
-            text-decoration: none;
-            color: #4CAF50;
-            font-weight: bold;
-            margin-left: 10px;
-        }
-        a:hover {
-            color: #45a049;
+        select {
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            margin-bottom: 10px;
         }
         input[type="file"] {
             display: none;
         }
-
-        .spinner {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.8);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            text-align: center;
-        }
-
-        .spinner div.spinner-circle {
-            border: 8px solid #f3f3f3;
-            border-top: 8px solid #4CAF50;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-
-        .spinner p {
-            font-size: 18px;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
     </style>
 </head>
 <body>
-    <div class="spinner" id="loading-spinner">
-        <div class="spinner-circle"></div>
-        <p>Analyse du document en cours...<br>(Cela prend en moyenne 45 secondes, merci de patienter.)</p>
-    </div>
     <div class="container">
         <h1>
             <img src="../static/loi.png" alt="Logo" style="max-width: 50px; vertical-align: middle;"> JustiScan
         </h1>
-        <form method="post" action="/predict" enctype="multipart/form-data" onsubmit="showLoading()">
+
+        <form method="post" enctype="multipart/form-data" id="uploadForm">
             <label for="file" class="custom-file-btn">
                 <img src="../static/PdfDrop.png" alt="Icône PDF">
             </label>
             <input type="file" name="pdf_file" id="file" accept="application/pdf" required onchange="handleFileSelection()">
             <div id="file-message"></div>
-            <div>
+<!-- Message d'instruction -->
+<label for="modelSelect">Choisissez votre type de document :</label>
+<br>
+<br>
+<!-- Sélection du modèle -->
+<select id="modelSelect" name="model" required>
+    <option value="" selected disabled>-- Aucun --</option>
+    <option value="notification">Notification</option>
+    <option value="assignation">Assignation</option>
+    <option value="requete">Requête</option>
+    <option value="declaration">Déclaration</option>
+</select>
+
+
+            <div class="buttons">
                 <button type="submit" id="submit-button">Soumettre</button>
-                <a href="/" class="reset-button">Réinitialiser</a>
+                <button type="button" id="reset-button">Réinitialiser</button>
             </div>
         </form>
+
         {% if prediction %}
         <div class="result">
             <h3>{{ prediction }}</h3>
@@ -165,7 +140,7 @@
         function handleFileSelection() {
             const fileInput = document.getElementById('file');
             const fileMessage = document.getElementById('file-message');
-            const fileName = fileInput.files[0].name;
+            const fileName = fileInput.files[0]?.name || '';
 
             if (fileName) {
                 fileMessage.textContent = `Fichier sélectionné : ${fileName}`;
@@ -174,10 +149,46 @@
             }
         }
 
-        function showLoading() {
-            const spinner = document.getElementById('loading-spinner');
-            spinner.style.display = 'flex';
-        }
+        // Vérification du fichier avant soumission avec tolérance à la casse
+        document.getElementById("uploadForm").addEventListener("submit", function(event) {
+            const model = document.getElementById("modelSelect").value;
+            const fileInput = document.getElementById("file");
+            const fileName = fileInput.files[0]?.name || '';
+
+            if (!model) {
+                alert("❌ Veuillez sélectionner un modèle avant de soumettre !");
+                event.preventDefault();
+                return;
+            }
+
+            // Vérification que le nom du fichier contient le mot-clé attendu (tolérance à la casse)
+            const modelKeywords = {
+                "notification": "notification",
+                "assignation": "assignation",
+                "requete": "requete",
+                "declaration": "declaration"
+            };
+
+            const keyword = modelKeywords[model];
+
+            // Expression régulière pour détecter le mot-clé (insensible à la casse)
+            const regex = new RegExp(keyword, "i");
+
+            if (!regex.test(fileName)) {
+                alert(`❌ Erreur : Le fichier PDF doit contenir "${keyword}" dans son nom (exemple : "${keyword}_document.pdf").`);
+                event.preventDefault();
+                return;
+            }
+
+            // Si tout est bon, définir la bonne action du formulaire
+            this.action = `/predict/${model}`;
+        });
+
+        // Réinitialisation du formulaire
+        document.getElementById("reset-button").addEventListener("click", function() {
+            document.getElementById("uploadForm").reset();
+            document.getElementById("file-message").textContent = "";
+        });
     </script>
 </body>
 </html>
